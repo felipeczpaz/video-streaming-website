@@ -1,3 +1,24 @@
+/*
+************************************************************
+*                                                          *
+*   Flowhooks Software - Open Source License               *
+*                                                          *
+*  This software is licensed under the GNU Affero General   *
+*  Public License v3. You may use, modify, and distribute   *
+*  this code under the terms of the AGPLv3.                *
+*                                                          *
+*  This program is distributed in the hope that it will be  *
+*  useful, but WITHOUT ANY WARRANTY; without even the       *
+*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
+*                                                          *
+*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
+*  File:                                                   *
+*  Description:                                            *
+*                                                          *
+************************************************************
+*/
+
 import React, { useState } from "react";
 
 const NavigationBar: React.FC = () => {
@@ -6,7 +27,7 @@ const NavigationBar: React.FC = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <nav className="bg-black shadow-md">
+    <nav className="bg-black shadow-md fixed w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
