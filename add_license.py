@@ -32,9 +32,11 @@ def prepend_license_to_files(root_dir, extensions=(".js", ".ts", ".jsx", ".tsx")
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
 
-                    if comment_block.strip() in content:
+                    # Check if the license is already present
+                    if comment_block.strip() in content.splitlines():
                         continue  # Skip if the license is already present
 
+                    # Prepend the license comment block
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(comment_block + content)
                     
