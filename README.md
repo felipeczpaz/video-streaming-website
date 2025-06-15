@@ -1,6 +1,10 @@
 # Video Streaming Website
 
+![Company Logo](assets/logo.png){: style="float: right; width: 150px;"} 
+
 A full-stack video streaming platform built with React, Vite, Node.js, Express, and MongoDB (Mongoose). This project provides a seamless video streaming experience with a modern frontend and a robust backend API.
+
+![Screenshot](assets/screenshot.png)
 
 ---
 
