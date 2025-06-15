@@ -18,14 +18,17 @@ const NavigationBar: React.FC = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center space-x-6">
+            <a href="/" className="text-gray-800 hover:text-gray-600">
+              Home
+            </a>
+            <a href="/about" className="text-gray-800 hover:text-gray-600">
+              About
+            </a>
             <a href="/login" className="text-gray-800 hover:text-gray-600">
               Login
             </a>
             <a href="/register" className="text-gray-800 hover:text-gray-600">
               Register
-            </a>
-            <a href="/about" className="text-gray-800 hover:text-gray-600">
-              About
             </a>
           </div>
 
@@ -82,6 +85,18 @@ const NavigationBar: React.FC = () => {
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <a
+              href="/"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
+            >
+              Home
+            </a>
+            <a
+              href="/about"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
+            >
+              About
+            </a>
+            <a
               href="/login"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
             >
@@ -92,12 +107,6 @@ const NavigationBar: React.FC = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
             >
               Register
-            </a>
-            <a
-              href="/about"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
-            >
-              About
             </a>
           </div>
         </div>
