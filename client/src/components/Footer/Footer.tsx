@@ -18,34 +18,13 @@
 *                                                          *
 ************************************************************
 */
-
-/*
- ************************************************************
- *                                                          *
- *   Flowhooks Software - Open Source License               *
- *                                                          *
- *  This software is licensed under the GNU Affero General   *
- *  Public License v3. You may use, modify, and distribute   *
- *  this code under the terms of the AGPLv3.                *
- *                                                          *
- *  This program is distributed in the hope that it will be  *
- *  useful, but WITHOUT ANY WARRANTY; without even the       *
- *  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
- *  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
- *                                                          *
- *  Author: Felipe Cezar Paz (git@felipecezar.com)          *
- *  File:                                                   *
- *  Description:                                            *
- *                                                          *
- ************************************************************
- */
 // src/components/Footer/Footer.tsx
 
 import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="text-center text-lg pt-8">
+    <footer className="text-center pt-8">
       <div className="container mx-auto pb-1">
         <div className="text-center">
           <h5 className="text-xl font-semibold mb-1">Video Streaming Site</h5>

@@ -56,7 +56,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+    <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
       {error && <p className="mb-4 text-red-600">{error}</p>}
       <form onSubmit={handleSubmit} noValidate>
@@ -101,7 +101,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
         <button
           type="submit"
-          className="w-full bg-red-600 text-white font-semibold py-2 rounded hover:bg-red-700 transition-colors"
+          className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition-colors"
         >
           Register
         </button>
