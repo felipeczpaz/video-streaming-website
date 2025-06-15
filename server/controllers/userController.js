@@ -1,0 +1,80 @@
+const bcrypt = require('bcrypt');
+const User = require('../models/User'); // Assuming you have a User model defined in models/User.js
+
+// User registration function
+const registerUser = async (req, res) => {
+  const { userId, username, email, password } = req.body;
+
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ error: 'User already exists' });
+  }
+
+  // Hash the password
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  // Create a new user
+  const newUser = new User({
+    userId,
+    username,
+    email,
+    passwordHash,
+  });
+
+  try {
+    await newUser.save();
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(400).json({ error: 'Error registering user', details: error });
+  }
+};
+
+// User login function
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Compare the password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Successful login
+    res.status(200).json({ message: 'Login successful', userId: user.userId, username: user.username });
+  } catch (error) {
+    res.status(500).json({ error: 'Error logging in', details: error });
+  }
+};
+
+// Get user details function
+const getUserDetails = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Exclude password from the response
+    const { passwordHash, ...userDetails } = user.toObject();
+    res.status(200).json(userDetails);
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving user', details: error });
+  }
+};
+
+// Export the controller functions
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserDetails,
+};
+
