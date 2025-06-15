@@ -6,28 +6,28 @@ const NavigationBar: React.FC = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <nav className="bg-white shadow-md fixed w-full z-10">
+    <nav className="bg-red-500 shadow-md fixed w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <a href="/" className="text-xl font-bold text-black">
+            <a href="/" className="text-xl font-bold text-white">
               Video Streaming Site
             </a>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center space-x-6">
-            <a href="/" className="text-gray-800 hover:text-gray-600">
+            <a href="/" className="text-white hover:text-gray-300">
               Home
             </a>
-            <a href="/about" className="text-gray-800 hover:text-gray-600">
+            <a href="/about" className="text-white hover:text-gray-300">
               About
             </a>
-            <a href="/login" className="text-gray-800 hover:text-gray-600">
+            <a href="/login" className="text-white hover:text-gray-300">
               Login
             </a>
-            <a href="/register" className="text-gray-800 hover:text-gray-600">
+            <a href="/register" className="text-white hover:text-gray-300">
               Register
             </a>
           </div>

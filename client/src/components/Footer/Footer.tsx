@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
             Developed by Felipe Cezar Paz (
             <a
               href="mailto:contact@felipecezar.com"
-              className="underline hover:text-blue-600"
+              className="text-blue-600 hover:underline"
             >
               contact@felipecezar.com
             </a>
