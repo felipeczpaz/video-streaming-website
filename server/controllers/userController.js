@@ -1,31 +1,10 @@
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 const bcrypt = require('bcrypt');
 const User = require('../models/User'); // Assuming you have a User model defined in models/User.js
 
 // User registration function
 const registerUser = async (req, res) => {
   if (!req.body) {
-    return res.status(400).json({ success: false, error: 'Request body is missing' });
+    return res.status(400).json({ error: 'request_body_missing' });
   }
 
   const { username, email, password } = req.body;
@@ -33,7 +12,7 @@ const registerUser = async (req, res) => {
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(400).json({ success: false, error: 'User already exists' });
+    return res.status(400).json({ error: 'user_already_exists' });
   }
 
   // Hash the password
@@ -50,7 +29,7 @@ const registerUser = async (req, res) => {
     await newUser.save();
     res.status(201).json({ success: true, message: 'User registered successfully', userId: newUser._id, username: newUser.username });
   } catch (error) {
-    res.status(400).json({ success: false, error: 'Error registering user', details: error });
+    res.status(400).json({ error: 'error_registering_user' });
   }
 };
 
@@ -68,19 +47,19 @@ const loginUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ success: false, error: 'Invalid username/email or password' });
+      return res.status(401).json({ error: 'invalid_credentials' });
     }
 
     // Compare the password with the hashed password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ success: false, error: 'Invalid username/email or password' });
+      return res.status(401).json({ error: 'invalid_credentials' });
     }
 
     // Successful login
     res.status(200).json({ success: true, message: 'Login successful', userId: user._id, username: user.username });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Error logging in', details: error });
+    res.status(500).json({ error: 'error_logging_in' });
   }
 };
 
@@ -89,16 +68,16 @@ const getUserDetails = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findOne({ userId });
+    const user = await User.findOne({ _id: userId });
     if (!user) {
-      return res.status(404).json({ success: false, error: 'User not found' });
+      return res.status(404).json({ error: 'user_not_found' });
     }
 
     // Exclude password from the response
     const { passwordHash, ...userDetails } = user.toObject();
     res.status(200).json({ success: true, userDetails });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Error retrieving user', details: error });
+    res.status(500).json({ error: 'error_retrieving_user' });
   }
 };
 
