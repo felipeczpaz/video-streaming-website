@@ -1,24 +1,3 @@
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 import React, { useState } from "react";
 
 interface RegisterFormProps {
@@ -74,7 +53,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         // Optionally, you can call onSubmit here if needed
         // onSubmit(email, password);
       } else {
-        setError(data.message || "Registration failed.");
+        // Associative array for error messages
+        const errorMessages: { [key: string]: string } = {
+          'request_body_missing': "Request body is missing.",
+          'user_already_exists': "A user with this email already exists.",
+          'error_registering_user': "There was an error registering the user.",
+        };
+
+        // Set error message based on the error code
+        setError(errorMessages[data.error] || "Registration failed. Please try again.");
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
@@ -85,6 +72,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
       {error && <p className="mb-4 text-red-600">{error}</p>}
+      {successMessage && <p className="mb-4 text-green-600">{successMessage}</p>}
       <form onSubmit={handleSubmit} noValidate>
         <label className="block mb-2 font-semibold" htmlFor="email">
           Email
