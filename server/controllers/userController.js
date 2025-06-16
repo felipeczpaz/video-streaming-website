@@ -24,12 +24,16 @@ const User = require('../models/User'); // Assuming you have a User model define
 
 // User registration function
 const registerUser = async (req, res) => {
-  const { userId, username, email, password } = req.body;
+  if (!req.body) {
+    return res.status(400).json({ success: false, error: 'Request body is missing' });
+  }
+
+  const { username, email, password } = req.body;
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(400).json({ error: 'User already exists' });
+    return res.status(400).json({ success: false, error: 'User already exists' });
   }
 
   // Hash the password
@@ -37,7 +41,6 @@ const registerUser = async (req, res) => {
 
   // Create a new user
   const newUser = new User({
-    userId,
     username,
     email,
     passwordHash,
@@ -45,9 +48,9 @@ const registerUser = async (req, res) => {
 
   try {
     await newUser.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (error) {
-    res.status(400).json({ error: 'Error registering user', details: error });
+    res.status(400).json({ success: false, error: 'Error registering user', details: error });
   }
 };
 
@@ -58,19 +61,19 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
     }
 
     // Compare the password with the hashed password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
     }
 
     // Successful login
-    res.status(200).json({ message: 'Login successful', userId: user.userId, username: user.username });
+    res.status(200).json({ success: true, message: 'Login successful', userId: user.userId, username: user.username });
   } catch (error) {
-    res.status(500).json({ error: 'Error logging in', details: error });
+    res.status(500).json({ success: false, error: 'Error logging in', details: error });
   }
 };
 
@@ -81,14 +84,14 @@ const getUserDetails = async (req, res) => {
   try {
     const user = await User.findOne({ userId });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
     // Exclude password from the response
     const { passwordHash, ...userDetails } = user.toObject();
-    res.status(200).json(userDetails);
+    res.status(200).json({ success: true, userDetails });
   } catch (error) {
-    res.status(500).json({ error: 'Error retrieving user', details: error });
+    res.status(500).json({ success: false, error: 'Error retrieving user', details: error });
   }
 };
 
@@ -98,4 +101,3 @@ module.exports = {
   loginUser,
   getUserDetails,
 };
-

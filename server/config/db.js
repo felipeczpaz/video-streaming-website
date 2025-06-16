@@ -22,11 +22,7 @@
 const mongoose = require('mongoose');
 
 // MongoDB connection options
-const mongoOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 5, // Set the maximum number of connections in the pool
-};
+const mongoOptions = {};
 
 // Function to connect to MongoDB
 const connectDB = async () => {
