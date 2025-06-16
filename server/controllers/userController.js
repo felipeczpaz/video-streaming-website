@@ -35,14 +35,14 @@ const registerUser = async (req, res) => {
 
 // User login function
 const loginUser = async (req, res) => {
-  const { identifier, password } = req.body; // Changed to 'identifier' to accept both username and email
+  const { login, password } = req.body; // Changed to 'identifier' to accept both username and email
 
   try {
     // Find user by username or email
     const user = await User.findOne({
       $or: [
-        { email: identifier },
-        { username: identifier }
+        { email: login },
+        { username: login }
       ]
     });
 

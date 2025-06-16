@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 interface RegisterFormProps {
   onSubmit: (email: string, password: string) => void;
@@ -10,6 +11,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +54,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         setSuccessMessage(data.message);
         // Optionally, you can call onSubmit here if needed
         // onSubmit(email, password);
+
+        // Redirect to the root path upon success
+        navigate("/"); // Use navigate to redirect
       } else {
         // Associative array for error messages
         const errorMessages: { [key: string]: string } = {

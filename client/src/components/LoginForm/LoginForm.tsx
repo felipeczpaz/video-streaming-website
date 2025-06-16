@@ -20,6 +20,7 @@
 */
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 interface LoginFormProps {
   onSubmit: (userId: string, username: string) => void; // Adjusted to match the expected parameters
@@ -30,6 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,6 +59,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
         // Call the onSubmit prop with userId and username
         // onSubmit(data.userId, data.username);
+
+        // Redirect to the root path upon success
+        navigate("/"); // Use navigate to redirect
       } else {
         // Associative array for error messages
         const errorMessages: { [key: string]: string } = {
