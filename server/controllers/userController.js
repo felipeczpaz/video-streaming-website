@@ -48,7 +48,7 @@ const registerUser = async (req, res) => {
 
   try {
     await newUser.save();
-    res.status(201).json({ success: true, message: 'User registered successfully' });
+    res.status(201).json({ success: true, message: 'User registered successfully', userId: newUser._id, username: newUser.username });
   } catch (error) {
     res.status(400).json({ success: false, error: 'Error registering user', details: error });
   }
@@ -56,22 +56,29 @@ const registerUser = async (req, res) => {
 
 // User login function
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { identifier, password } = req.body; // Changed to 'identifier' to accept both username and email
 
   try {
-    const user = await User.findOne({ email });
+    // Find user by username or email
+    const user = await User.findOne({
+      $or: [
+        { email: identifier },
+        { username: identifier }
+      ]
+    });
+
     if (!user) {
-      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+      return res.status(401).json({ success: false, error: 'Invalid username/email or password' });
     }
 
     // Compare the password with the hashed password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+      return res.status(401).json({ success: false, error: 'Invalid username/email or password' });
     }
 
     // Successful login
-    res.status(200).json({ success: true, message: 'Login successful', userId: user.userId, username: user.username });
+    res.status(200).json({ success: true, message: 'Login successful', userId: user._id, username: user.username });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Error logging in', details: error });
   }
