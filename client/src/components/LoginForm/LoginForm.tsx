@@ -22,27 +22,22 @@
 import React, { useState } from "react";
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => void;
+  onSubmit: (userId: string, username: string) => void; // Adjusted to match the expected parameters
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState(""); // Changed state variable to 'login'
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage(""); // Reset success message
 
-    if (!email || !password) {
+    if (!login || !password) {
       setError("Please fill in both fields.");
-      return;
-    }
-
-    // Simple email validation
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address.");
       return;
     }
 
@@ -52,14 +47,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ identifier: email, password }), // Changed 'login' to 'identifier'
+        body: JSON.stringify({ login, password }), // Use 'login' for the request body
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Call the onLoginSuccess prop with userId and username
-        onLoginSuccess(data.userId, data.username);
+        setSuccessMessage(data.message);
+
+        // Call the onSubmit prop with userId and username
+        // onSubmit(data.userId, data.username);
       } else {
         // Associative array for error messages
         const errorMessages: { [key: string]: string } = {
@@ -79,17 +76,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
       {error && <p className="mb-4 text-red-600">{error}</p>}
+      {successMessage && <p className="mb-4 text-green-600">{successMessage}</p>}
       <form onSubmit={handleSubmit} noValidate>
-        <label className="block mb-2 font-semibold" htmlFor="email">
-          Email
+        <label className="block mb-2 font-semibold" htmlFor="login">
+          Username or Email
         </label>
         <input
-          id="email"
-          type="email"
+          id="login"
+          type="text" // Keep as text to accommodate both username and email
           className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="example@example.com"
+          value={login}
+          onChange={(e) => setLogin(e.target.value)} // Update state with login
+          placeholder="Username or Email"
           required
         />
 
