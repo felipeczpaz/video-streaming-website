@@ -34,7 +34,7 @@ connectDB();
 app.use(express.json());
 
 // Use user routes
-app.use('/api', userRoutes);
+app.use('/api/user', userRoutes);
 
 // Start the server
 app.listen(port, () => {
