@@ -19,48 +19,6 @@
 ************************************************************
 */
 
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 import React, { useState } from "react";
 
 interface LoginFormProps {
@@ -72,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -88,7 +46,33 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       return;
     }
 
-    onSubmit(email, password);
+    try {
+      const response = await fetch("http://localhost:3000/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ identifier: email, password }), // Changed 'login' to 'identifier'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Call the onLoginSuccess prop with userId and username
+        onLoginSuccess(data.userId, data.username);
+      } else {
+        // Associative array for error messages
+        const errorMessages: { [key: string]: string } = {
+          'invalid_credentials': "Invalid username/email or password.",
+          'error_logging_in': "There was an error logging in.",
+        };
+
+        // Set error message based on the error code
+        setError(errorMessages[data.error] || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
   };
 
   return (
