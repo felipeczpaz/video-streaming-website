@@ -22,6 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const authenticate = require('../middleware/authenticate');
 
 // User registration route
 router.post('/register', userController.registerUser);
@@ -30,6 +31,9 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 
 // Get user details route
-router.get('/user/:userId', userController.getUserDetails);
+router.post('/:userId', userController.getUserDetails);
+
+// Get current user details route
+router.post('/me', authenticate, userController.getUserDetails);
 
 module.exports = router;
