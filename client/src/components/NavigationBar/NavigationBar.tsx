@@ -1,11 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "../../context/UserContext"; // Adjust the import path as necessary
 
 const NavigationBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check local storage for dark mode preference
+    const savedMode = localStorage.getItem("darkMode");
+    console.log("Initial dark mode from localStorage:", savedMode);
+    return savedMode === "true"; // Return true if dark mode was previously enabled
+  });
   const { user } = useUser(); // Access user context
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", isDarkMode.toString());
+    console.log("Dark mode set to:", isDarkMode);
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   return (
     <nav className="bg-red-500 shadow-md fixed w-full z-10">
@@ -27,10 +46,7 @@ const NavigationBar: React.FC = () => {
               About
             </a>
             {user ? (
-              <a
-                href="/logout"
-                className="text-white hover:text-gray-300"
-              >
+              <a href="/logout" className="text-white hover:text-gray-300">
                 Logout
               </a>
             ) : (
@@ -43,6 +59,17 @@ const NavigationBar: React.FC = () => {
                 </a>
               </>
             )}
+
+            {/* Dark Mode Toggle Button */}
+            <div className="flex items-center">
+              <button
+                onClick={toggleDarkMode}
+                className="text-white hover:text-gray-300"
+                aria-label="Toggle dark mode"
+              >
+                <i className={`fas ${isDarkMode ? "fa-sun" : "fa-moon"}`}></i>
+              </button>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -52,7 +79,7 @@ const NavigationBar: React.FC = () => {
               type="button"
               aria-controls="mobile-menu"
               aria-expanded={isOpen}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-600"
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
@@ -99,33 +126,50 @@ const NavigationBar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <a
               href="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
             >
               Home
             </a>
             <a
               href="/about"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
+              className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
             >
               About
             </a>
             {user ? (
               <a
                 href="/logout"
-                className="text-white hover:text-gray-300"
+                className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
               >
                 Logout
               </a>
             ) : (
               <>
-                <a href="/login" className="text-white hover:text-gray-300">
+                <a
+                  href="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
+                >
                   Login
                 </a>
-                <a href="/register" className="text-white hover:text-gray-300">
+                <a
+                  href="/register"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
+                >
                   Register
                 </a>
               </>
             )}
+
+            {/* Dark Mode Toggle Button */}
+            <div className="px-3 pt-2 pb-3 space-y-1 sm:px-3">
+              <button
+                onClick={toggleDarkMode}
+                className="text-white hover:text-gray-300"
+                aria-label="Toggle dark mode"
+              >
+                <i className={`fas ${isDarkMode ? "fa-sun" : "fa-moon"}`}></i>
+              </button>
+            </div>
           </div>
         </div>
       )}

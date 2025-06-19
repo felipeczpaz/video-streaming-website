@@ -1,0 +1,33 @@
+/* styles.css */
+
+/* General styles for dark mode */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background-color: #1a202c; /* Dark background */
+  color: white; /* Light text */
+}
+
+.dark .bg-white {
+  background-color: #2d3748; /* Dark mode background for white elements */
+}
+
+.dark .text-gray-700 {
+  color: #e2e8f0; /* Light text for dark mode */
+}
+
+.dark .text-gray-600 {
+  color: #a0aec0; /* Lighter text for dark mode */
+}
+
+/* Additional styles for form elements */
+.dark input {
+  background-color: #4a5568; /* Dark input background */
+  color: white; /* Light text in inputs */
+}
+
+.dark input::placeholder {
+  color: #a0aec0; /* Placeholder color in dark mode */
+}
