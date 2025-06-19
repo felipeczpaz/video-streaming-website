@@ -1,30 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useUser } from "../../context/UserContext"; // Adjust the import path as necessary
+import { useDarkMode } from "../../context/DarkModeContext"; // Import the dark mode context
 
 const NavigationBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check local storage for dark mode preference
-    const savedMode = localStorage.getItem("darkMode");
-    console.log("Initial dark mode from localStorage:", savedMode);
-    return savedMode === "true"; // Return true if dark mode was previously enabled
-  });
+  const { isDarkMode, toggleDarkMode } = useDarkMode(); // Use the dark mode context
   const { user } = useUser(); // Access user context
 
   const toggleMenu = () => setIsOpen(!isOpen);
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => !prevMode);
-  };
-
-  useEffect(() => {
-    localStorage.setItem("darkMode", isDarkMode.toString());
-    console.log("Dark mode set to:", isDarkMode);
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   return (
     <nav className="bg-red-500 shadow-md fixed w-full z-10">

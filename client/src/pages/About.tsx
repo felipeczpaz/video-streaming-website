@@ -1,48 +1,11 @@
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 import React from "react";
+import { useDarkMode } from "../context/DarkModeContext"; // Adjust the import path as necessary
+import { useUser } from "../context/UserContext"; // Adjust the import path as necessary
 
 const About: React.FC = () => {
+  const { isDarkMode } = useDarkMode(); // Use the dark mode context
+  const { user } = useUser(); // Access user context
+
   return (
     <div className="max-w-3xl mx-auto mt-20 p-8 font-sans">
       <h1 className="text-2xl font-bold">
@@ -114,7 +77,7 @@ const About: React.FC = () => {
 
         <div className="flex-2 text-right">
           <img
-            src="/flowhooks-logo.png"
+            src={isDarkMode ? "/flowhooks-logo-white.png" : "/flowhooks-logo-dark.png"} // Change the logo based on dark mode
             alt="FlowHooks Logo"
             className="max-w-xs h-auto mt-4"
           />
