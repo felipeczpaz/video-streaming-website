@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const User = require('../models/User'); // Assuming you have a User model defined in models/User.js
+const storeToken = require('../services/tokenService'); // Import token service
 
 const JWT_SECRET = process.env.JWT_SECRET; // Replace with your actual secret key
 if (!JWT_SECRET) {
@@ -39,6 +40,9 @@ const registerUser = async (req, res) => {
     // Generate JWT
     const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
 
+    // Store the token in the database
+    await storeToken(newUser._id, token);
+
     res.status(201).json({ success: true, message: 'User registered successfully', userId: newUser._id, username: newUser.username, token });
   } catch (error) {
     console.error('Error registering user:', error); // Log the error details
@@ -75,6 +79,9 @@ const loginUser = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+    // Store the token in the database
+    await storeToken(user._id, token);
 
     // Successful login
     res.status(200).json({ success: true, message: 'Login successful', userId: user._id, username: user.username, token });

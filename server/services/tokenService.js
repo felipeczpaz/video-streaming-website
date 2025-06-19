@@ -5,6 +5,4 @@ async function storeToken(userId, token) {
     await newToken.save();
 }
 
-module.exports = {
-    storeToken
-};
+module.exports = storeToken;
