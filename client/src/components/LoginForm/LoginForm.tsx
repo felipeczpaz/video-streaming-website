@@ -21,6 +21,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useUser } from '../../context/UserContext';
 
 interface LoginFormProps {
   onSubmit: (userId: string, username: string) => void; // Adjusted to match the expected parameters
@@ -31,6 +32,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const { setUser } = useUser();
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,11 +53,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         },
         body: JSON.stringify({ login, password }), // Use 'login' for the request body
       });
-
+	
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(data.message);
+        console.log('Login successful:', data);
+        setSuccessMessage('Login successful!');
+
+        localStorage.setItem('token', data.token);
+        window.dispatchEvent(new Event('authChange'));
 
         // Call the onSubmit prop with userId and username
         // onSubmit(data.userId, data.username);

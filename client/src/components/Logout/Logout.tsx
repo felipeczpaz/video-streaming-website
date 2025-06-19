@@ -40,9 +40,26 @@
 ************************************************************
 */
 
+// Logout.tsx
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
 
 const Logout: React.FC = () => {
+  const navigate = useNavigate();
+  const { setUser } = useUser();
+
+  useEffect(() => {
+    // Clear user authentication data (e.g., remove token from localStorage)
+    localStorage.removeItem('token'); // Adjust based on your auth method
+
+    setUser(null); // Clear user state
+    window.dispatchEvent(new Event('authChange'));
+
+    // Redirect to the login page or home page
+    navigate('/login'); // Change to your desired route
+  }, [setUser, navigate]);
+
   return null; // You can also return a loading spinner or message if desired
 };
 

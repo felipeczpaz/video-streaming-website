@@ -1,49 +1,9 @@
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 import React, { useState } from "react";
+import { useUser } from "../../context/UserContext"; // Adjust the import path as necessary
 
 const NavigationBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUser(); // Access user context
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -66,12 +26,23 @@ const NavigationBar: React.FC = () => {
             <a href="/about" className="text-white hover:text-gray-300">
               About
             </a>
-            <a href="/login" className="text-white hover:text-gray-300">
-              Login
-            </a>
-            <a href="/register" className="text-white hover:text-gray-300">
-              Register
-            </a>
+            {user ? (
+              <a
+                href="/logout"
+                className="text-white hover:text-gray-300"
+              >
+                Logout
+              </a>
+            ) : (
+              <>
+                <a href="/login" className="text-white hover:text-gray-300">
+                  Login
+                </a>
+                <a href="/register" className="text-white hover:text-gray-300">
+                  Register
+                </a>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -138,18 +109,23 @@ const NavigationBar: React.FC = () => {
             >
               About
             </a>
-            <a
-              href="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
-            >
-              Login
-            </a>
-            <a
-              href="/register"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-800 hover:text-gray-600 hover:bg-gray-200"
-            >
-              Register
-            </a>
+            {user ? (
+              <a
+                href="/logout"
+                className="text-white hover:text-gray-300"
+              >
+                Logout
+              </a>
+            ) : (
+              <>
+                <a href="/login" className="text-white hover:text-gray-300">
+                  Login
+                </a>
+                <a href="/register" className="text-white hover:text-gray-300">
+                  Register
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}

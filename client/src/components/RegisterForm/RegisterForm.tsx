@@ -55,6 +55,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         // Optionally, you can call onSubmit here if needed
         // onSubmit(email, password);
 
+        localStorage.setItem('token', data.token);
+        window.dispatchEvent(new Event('authChange'));
+
         // Redirect to the root path upon success
         navigate("/"); // Use navigate to redirect
       } else {
