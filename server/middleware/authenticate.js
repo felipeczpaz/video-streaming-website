@@ -3,10 +3,17 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Adjust the path as necessary
 
 const authenticate = async (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Bearer token
+  const authHeader = req.headers['authorisation']; // Use lowercase 'authorisation' for case insensitivity
 
-  if (!token) {
-    return res.status(401).json({ error: 'unauthorized' });
+  // Check if the authorization header is present and starts with 'Bearer '
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized: No token provided' });
+  }
+
+  // Extract the Bearer token
+  const token = authHeader.split(' ')[1]; // Bearer token
+  if (!token || token.trim() === '') {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
   }
 
   try {
@@ -14,7 +21,7 @@ const authenticate = async (req, res, next) => {
     req.userId = decoded.userId; // Assuming the token contains the user ID
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'invalid_token' });
+    return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
   }
 };
 

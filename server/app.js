@@ -21,6 +21,7 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -30,6 +31,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 connectDB();
+
+// Use CORS middleware
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());

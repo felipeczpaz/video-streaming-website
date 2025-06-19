@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const User = require('../models/User'); // Assuming you have a User model defined in models/User.js
 
@@ -36,7 +37,7 @@ const registerUser = async (req, res) => {
     await newUser.save();
 
     // Generate JWT
-    const token = jwt.sign({ userId: newUser._id, username: newUser.username }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ success: true, message: 'User registered successfully', userId: newUser._id, username: newUser.username, token });
   } catch (error) {
@@ -47,6 +48,10 @@ const registerUser = async (req, res) => {
 
 // User login function
 const loginUser = async (req, res) => {
+  if (!req.body) {
+    return res.status(400).json({ error: 'request_body_missing' });
+  }
+
   const { login, password } = req.body; // Changed to 'identifier' to accept both username and email
 
   try {
@@ -69,7 +74,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate JWT
-    const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
     // Successful login
     res.status(200).json({ success: true, message: 'Login successful', userId: user._id, username: user.username, token });
@@ -87,6 +92,11 @@ const getUserDetails = async (req, res) => {
 
   // Use the authenticated user's ID if "me" is requested
   const userId = req.params.userId === 'me' ? req.userId : req.params.userId;
+
+  // Check if the userId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID format' });
+  }
 
   try {
     console.log('Fetching details for user ID:', userId); // Log the user ID being fetched

@@ -31,9 +31,6 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 
 // Get user details route
-router.post('/:userId', userController.getUserDetails);
-
-// Get current user details route
-router.post('/me', authenticate, userController.getUserDetails);
+router.post('/:userId', authenticate, userController.getUserDetails);
 
 module.exports = router;
