@@ -53,7 +53,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       if (response.ok) {
         setSuccessMessage(data.message);
         // Optionally, you can call onSubmit here if needed
-        onSubmit(email, password);
+        //onSubmit(email, password);
 
         localStorage.setItem('token', data.token);
         window.dispatchEvent(new Event('authChange'));

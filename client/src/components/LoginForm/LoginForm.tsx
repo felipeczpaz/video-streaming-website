@@ -64,7 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         window.dispatchEvent(new Event('authChange'));
 
         // Call the onSubmit prop with userId and username
-        onSubmit(data.userId, data.username);
+        //onSubmit(data.userId, data.username);
 
         // Redirect to the root path upon success
         navigate("/"); // Use navigate to redirect
