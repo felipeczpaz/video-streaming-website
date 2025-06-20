@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Adjust the path as necessary
 
 const authenticate = async (req, res, next) => {
-  const authHeader = req.headers['authorisation']; // Use lowercase 'authorisation' for case insensitivity
+  const authHeader = req.headers['authorization']; // Use lowercase 'authorization' for case insensitivity
 
   // Check if the authorization header is present and starts with 'Bearer '
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
