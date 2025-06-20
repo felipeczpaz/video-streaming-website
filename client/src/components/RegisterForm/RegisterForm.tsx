@@ -6,14 +6,14 @@ interface RegisterFormProps {
 }
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
@@ -53,7 +53,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       if (response.ok) {
         setSuccessMessage(data.message);
         // Optionally, you can call onSubmit here if needed
-        // onSubmit(email, password);
+        onSubmit(email, password);
 
         localStorage.setItem('token', data.token);
         window.dispatchEvent(new Event('authChange'));

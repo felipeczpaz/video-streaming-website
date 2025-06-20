@@ -38,7 +38,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorisation: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Fixed typo: "Authorisation" to "Authorization"
         },
       });
       if (!response.ok) throw new Error("Failed to fetch user data");
@@ -57,7 +57,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       setUser(userData);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "An unknown error occurred",
+        err instanceof Error ? err.message : "An unknown error occurred"
       );
     }
   };

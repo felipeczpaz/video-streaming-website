@@ -28,14 +28,14 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
-  const [login, setLogin] = useState(""); // Changed state variable to 'login'
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [login, setLogin] = useState<string>(""); // Changed state variable to 'login'
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const { setUser } = useUser();
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccessMessage(""); // Reset success message
@@ -53,7 +53,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         },
         body: JSON.stringify({ login, password }), // Use 'login' for the request body
       });
-	
+
       const data = await response.json();
 
       if (response.ok) {
@@ -64,7 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
         window.dispatchEvent(new Event('authChange'));
 
         // Call the onSubmit prop with userId and username
-        // onSubmit(data.userId, data.username);
+        onSubmit(data.userId, data.username);
 
         // Redirect to the root path upon success
         navigate("/"); // Use navigate to redirect

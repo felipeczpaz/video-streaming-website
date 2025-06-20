@@ -21,19 +21,25 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { UserProvider } from './context/UserContext.tsx'; // Adjust the import path as necessary
+import { UserProvider } from './context/UserContext'; // Adjust the import path as necessary
 import { DarkModeProvider } from "./context/DarkModeContext"; // Import the DarkModeProvider
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import App from "./App";
 import Home from "./pages/Home";
 import About from "./pages/About";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <UserProvider>
-      <DarkModeProvider>
-        <App />
-      </DarkModeProvider>
-    </UserProvider>
-  </StrictMode>
-);
+// Ensure that the element with id "root" exists
+const rootElement = document.getElementById("root");
+
+if (rootElement) {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <UserProvider>
+        <DarkModeProvider>
+          <App />
+        </DarkModeProvider>
+      </UserProvider>
+    </StrictMode>
+  );
+} else {
+  console.error("Root element not found");
+}

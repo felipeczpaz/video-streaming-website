@@ -3,11 +3,11 @@ import { useUser } from "../../context/UserContext"; // Adjust the import path a
 import { useDarkMode } from "../../context/DarkModeContext"; // Import the dark mode context
 
 const NavigationBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false); // Explicitly type the state
   const { isDarkMode, toggleDarkMode } = useDarkMode(); // Use the dark mode context
   const { user } = useUser(); // Access user context
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen((prev) => !prev); // Use functional update for state
 
   return (
     <nav className="bg-red-500 shadow-md fixed w-full z-10">
