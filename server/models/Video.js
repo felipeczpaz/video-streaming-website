@@ -3,9 +3,10 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 // Define the Video schema
 const videoSchema = new mongoose.Schema({
-    videoId: {
-        type: Number,
-        unique: true, // Ensures that each video has a unique ID
+    uploaderId: {
+        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
+        required: true,
+        ref: 'User' // Assuming the User model is named 'User'
     },
     title: {
         type: String,
@@ -23,10 +24,6 @@ const videoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now // Automatically sets the date when the video is updated
     },
-    url: {
-        type: String,
-        required: true // URL or filename of the video
-    }
 });
 
 // Apply the AutoIncrement plugin to the video schema

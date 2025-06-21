@@ -7,18 +7,26 @@ const createVideo = async (req, res) => {
     return res.status(400).json({ error: 'request_body_missing' });
   }
 
-  const { title, description, url } = req.body;
+  const { title, description } = req.body;
+
+  // Check if the user is authenticated
+  if (!req.userId) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
+  // Use the authenticated user's ID as uploaderId
+  const uploaderId = req.userId;
 
   // Check if all required fields are provided
-  if (!title || !description || !url) {
-    return res.status(400).json({ error: 'missing_required_fields', fields: { title, description, url } });
+  if (!title || !description) {
+    return res.status(400).json({ error: 'missing_required_fields', fields: { title, description } });
   }
 
   // Create a new video
   const newVideo = new Video({
     title,
     description,
-    url,
+    uploaderId,
   });
 
   try {

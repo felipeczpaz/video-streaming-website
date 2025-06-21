@@ -28,7 +28,7 @@ const authenticate = require('../middleware/authenticate');
 router.post('/create', authenticate, videoController.createVideo);
 
 // Get video details route
-router.get('/:videoId', videoController.getVideoDetails);
+router.post('/:videoId', videoController.getVideoDetails);
 
 // Update a video route
 router.put('/:videoId', authenticate, videoController.updateVideo);
