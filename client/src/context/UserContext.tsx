@@ -34,7 +34,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/user/me", {
+      const response = await fetch("http://localhost:3000/api/users/me", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

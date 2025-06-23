@@ -7,7 +7,7 @@ const createVideo = async (req, res) => {
     return res.status(400).json({ error: 'request_body_missing' });
   }
 
-  const { title, description } = req.body;
+  const { title, description, thumbnailUrl } = req.body; // Include thumbnailUrl
 
   // Check if the user is authenticated
   if (!req.userId) {
@@ -18,14 +18,15 @@ const createVideo = async (req, res) => {
   const uploaderId = req.userId;
 
   // Check if all required fields are provided
-  if (!title || !description) {
-    return res.status(400).json({ error: 'missing_required_fields', fields: { title, description } });
+  if (!title || !description || !thumbnailUrl) { // Check for thumbnailUrl
+    return res.status(400).json({ error: 'missing_required_fields', fields: { title, description, thumbnailUrl } });
   }
 
   // Create a new video
   const newVideo = new Video({
     title,
     description,
+    thumbnailUrl, // Add thumbnailUrl to the new video
     uploaderId,
   });
 
@@ -109,10 +110,22 @@ const deleteVideo = async (req, res) => {
   }
 };
 
+// Get video feed
+const getVideoFeed = async (req, res) => {
+  try {
+    const videos = await Video.find().sort({ createdAt: -1 }); // Fetch all videos sorted by creation date
+    res.status(200).json({ success: true, videos });
+  } catch (error) {
+    console.error('Error fetching video feed:', error); // Log the error details
+    res.status(500).json({ error: 'error_fetching_video_feed' });
+  }
+};
+
 // Export the controller functions
 module.exports = {
   createVideo,
   getVideoDetails,
   updateVideo,
   deleteVideo,
+  getVideoFeed,
 };
