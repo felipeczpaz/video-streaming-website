@@ -26,6 +26,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home"; // Import the Home component
 import About from "./pages/About"; // Import the About component
 import VideoPage from './pages/VideoPage';
+import Upload from './pages/Upload'; // Import the UploadPage component
 import NavigationBar from "./components/NavigationBar/NavigationBar"; // Import the NavigationBar component
 import Footer from "./components/Footer/Footer"; // Import the Footer component
 import LoginForm from "./components/LoginForm/LoginForm"; // Import the LoginForm component
@@ -44,6 +45,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginForm />} /> {/* Set up the login route */}
           <Route path="/logout" element={<Logout />} /> {/* Set up the logout route */}
           <Route path="/video/:videoId" element={<VideoPage />} />
+          <Route path="/upload" element={<Upload />} /> {/* Set up the upload route */}
         </Routes>
       </div>
       <Footer />

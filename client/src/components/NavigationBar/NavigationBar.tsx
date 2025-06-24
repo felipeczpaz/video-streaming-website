@@ -25,6 +25,10 @@ const NavigationBar: React.FC = () => {
             <a href="/" className="text-white hover:text-gray-300">
               Home
             </a>
+            {/* Upload Button */}
+            <a href="/upload" className="text-white hover:text-gray-300">
+              Upload
+            </a>
             <a href="/about" className="text-white hover:text-gray-300">
               About
             </a>
