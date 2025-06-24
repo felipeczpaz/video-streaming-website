@@ -59,9 +59,9 @@ const Upload: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-20 p-8 font-sans">
-      <h1 className="text-2xl font-bold">📤 Upload Your File</h1>
+      <h1 className="text-2xl font-bold">📤 Upload Your Video</h1>
       <p className="mt-4">
-        Welcome, <strong>{user?.username || "Guest"}</strong>! Please upload your file below.
+        Welcome, <strong>{user?.username || "Guest"}</strong>! Please upload your video file below.
       </p>
 
       {error && <p className="mt-4 text-red-600">{error}</p>}
@@ -69,11 +69,12 @@ const Upload: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="mt-6" noValidate>
         <label className="block mb-2 font-semibold" htmlFor="file-upload">
-          Choose a file
+          Choose a video file
         </label>
         <input
           id="file-upload"
           type="file"
+          accept="video/*" // Restrict to video file types
           className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={handleFileChange}
           required
@@ -90,7 +91,7 @@ const Upload: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold">🌟 Upload Guidelines</h2>
         <ul className="list-disc list-inside mt-2">
-          <li>📁 Supported formats: .jpg, .png, .pdf, .mp4</li>
+          <li>📁 Supported formats: .mp4, .avi, .mov, .mkv</li> {/* Updated to reflect video formats */}
           <li>🔒 Ensure your file does not exceed 10MB.</li>
           <li>📝 Please provide accurate file information.</li>
         </ul>

@@ -33,6 +33,13 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
+      // Check if the selected file is a video format
+      const validVideoTypes = ["video/mp4", "video/x-m4v", "video/ogg", "video/webm"];
+      if (!validVideoTypes.includes(selectedFile.type)) {
+        setError("Please select a valid video file (MP4, M4V, OGG, WEBM).");
+        setFile(null); // Clear the file state
+        return;
+      }
       setFile(selectedFile);
       setError(""); // Clear any previous error
     }
@@ -71,16 +78,17 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
 
   return (
     <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Upload File</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Upload Video</h2>
       {error && <p className="mb-4 text-red-600">{error}</p>}
       {successMessage && <p className="mb-4 text-green-600">{successMessage}</p>}
       <form onSubmit={handleSubmit} noValidate>
         <label className="block mb-2 font-semibold" htmlFor="file-upload">
-          Choose a file
+          Choose a video file
         </label>
         <input
           id="file-upload"
           type="file"
+          accept="video/mp4,video/x-m4v,video/ogg,video/webm" // Accept only video formats
           className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={handleFileChange}
           required
