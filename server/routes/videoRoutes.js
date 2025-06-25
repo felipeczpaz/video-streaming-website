@@ -20,12 +20,28 @@
 */
 
 const express = require('express');
+const multer = require('multer');
 const router = express.Router();
 const videoController = require('../controllers/videoController');
 const authenticate = require('../middleware/authenticate');
 
+// Set up multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Specify the directory to save uploaded files
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Append timestamp to the filename
+  },
+});
+
+const upload = multer({ storage, limits: { fileSize: 120 * 1024 * 1024 }});
+
 // Create a new video route
 router.post('/create', authenticate, videoController.createVideo);
+
+// Route for uploading a video
+router.post('/upload', authenticate, upload.single('videoFile'), videoController.createVideo);
 
 // Get video details route
 router.post('/:videoId', videoController.getVideoDetails);

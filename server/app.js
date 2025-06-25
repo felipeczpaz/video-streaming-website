@@ -22,6 +22,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const videoRoutes = require('./routes/videoRoutes'); // Import video routes
@@ -36,8 +37,11 @@ connectDB();
 // Use CORS middleware
 app.use(cors());
 
+app.use(bodyParser.json({ limit: '120mb' })); // For JSON payloads
+app.use(bodyParser.urlencoded({ limit: '120mb', extended: true })); // For URL-encoded payloads
+
 // Middleware to parse JSON bodies
-app.use(express.json());
+//app.use(express.json());
 
 // Use routes
 app.use('/api/videos', videoRoutes); // Use video routes
