@@ -1,24 +1,3 @@
-/*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
-
 import React, { useState } from "react";
 
 interface UploadComponentProps {
@@ -27,21 +6,23 @@ interface UploadComponentProps {
 
 const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
   const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      // Check if the selected file is a video format
       const validVideoTypes = ["video/mp4", "video/x-m4v", "video/ogg", "video/webm"];
       if (!validVideoTypes.includes(selectedFile.type)) {
         setError("Please select a valid video file (MP4, M4V, OGG, WEBM).");
-        setFile(null); // Clear the file state
+        setFile(null);
         return;
       }
       setFile(selectedFile);
-      setError(""); // Clear any previous error
+      setError("");
     }
   };
 
@@ -50,16 +31,19 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
     setError("");
     setSuccessMessage("");
 
-    if (!file) {
-      setError("Please select a file to upload.");
+    if (!file || !title || !description || !thumbnailUrl) {
+      setError("Please fill in all fields and select a file to upload.");
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("videoFile", file); // Use the correct field name for the video file
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("thumbnailUrl", thumbnailUrl); // Assuming thumbnailUrl is a string
 
-      const response = await fetch("http://localhost:3000/api/upload", {
+      const response = await fetch("http://localhost:3000/api/videos/upload", { // Update the URL to match your backend route
         method: "POST",
         body: formData,
       });
@@ -67,7 +51,7 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
       if (response.ok) {
         const data = await response.json();
         setSuccessMessage("File uploaded successfully!");
-        onUpload(data.file); // Call the onUpload prop with the uploaded file data
+        onUpload(data.videoId); // Call the onUpload prop with the uploaded video ID
       } else {
         setError("Failed to upload file. Please try again.");
       }
@@ -88,9 +72,44 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
         <input
           id="file-upload"
           type="file"
-          accept="video/mp4,video/x-m4v,video/ogg,video/webm" // Accept only video formats
+          accept="video/mp4,video/x-m4v,video/ogg,video/webm"
           className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           onChange={handleFileChange}
+          required
+        />
+
+        <label className="block mb-2 font-semibold" htmlFor="title">
+          Title
+        </label>
+        <input
+          id="title"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <label className="block mb-2 font-semibold" htmlFor="description">
+          Description
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <label className="block mb-2 font-semibold" htmlFor="thumbnailUrl">
+          Thumbnail URL
+        </label>
+        <input
+          id="thumbnailUrl"
+          type="text"
+          value={thumbnailUrl}
+          onChange={(e) => setThumbnailUrl(e.target.value)}
+          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
 

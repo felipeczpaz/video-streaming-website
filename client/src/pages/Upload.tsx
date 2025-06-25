@@ -7,6 +7,8 @@ const Upload: React.FC = () => {
   const { isDarkMode } = useDarkMode(); // Use the dark mode context
   const { user } = useUser(); // Access user context
   const [file, setFile] = useState<File | null>(null);
+  const [videoTitle, setVideoTitle] = useState<string>(""); // State for video title
+  const [videoDescription, setVideoDescription] = useState<string>(""); // State for video description
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const navigate = useNavigate(); // Initialize navigate for redirection
@@ -31,16 +33,27 @@ const Upload: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("title", videoTitle);
+      formData.append("description", videoDescription);
+      formData.append("videoFile", file); // Ensure this matches the field name in multer
 
-      const response = await fetch("http://localhost:3000/api/upload", {
+      const response = await fetch("http://localhost:3000/api/videos/upload", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
+        },
         body: formData,
       });
 
       if (response.ok) {
         const data = await response.json();
         setSuccessMessage("File uploaded successfully!");
+        setVideoTitle(""); // Clear title after successful upload
+        setVideoDescription(""); // Clear description after successful upload
+        setFile(null); // Clear file after successful upload
+
+        // Redirect to the video page using the videoId returned from the server
+        navigate(`/video/${data.videoId}`);
       } else {
         setError("Failed to upload file. Please try again.");
       }
@@ -51,23 +64,57 @@ const Upload: React.FC = () => {
 
   // Check for token in local storage on component mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login'); // Redirect to login if token is not found
+      navigate("/login"); // Redirect to login if token is not found
     }
   }, [navigate]);
+
+  // Common styles for inputs
+  const inputStyles = `w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+    isDarkMode
+      ? "bg-gray-600 border-gray-400 text-white focus:ring-blue-500"
+      : "bg-white text-black border-gray-300 focus:ring-blue-500"
+  }`;
 
   return (
     <div className="max-w-3xl mx-auto mt-20 p-8 font-sans">
       <h1 className="text-2xl font-bold">📤 Upload Your Video</h1>
       <p className="mt-4">
-        Welcome, <strong>{user?.username || "Guest"}</strong>! Please upload your video file below.
+        Welcome, <strong>{user?.username || "Guest"}</strong>! Please upload
+        your video file below.
       </p>
 
       {error && <p className="mt-4 text-red-600">{error}</p>}
-      {successMessage && <p className="mt-4 text-green-600">{successMessage}</p>}
+      {successMessage && (
+        <p className="mt-4 text-green-600">{successMessage}</p>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-6" noValidate>
+        <label className="block mb-2 font-semibold" htmlFor="video-title">
+          Video Title
+        </label>
+        <input
+          id="video-title"
+          type="text"
+          value={videoTitle}
+          onChange={(e) => setVideoTitle(e.target.value)}
+          className={inputStyles}
+          required
+        />
+
+        <label className="block mb-2 font-semibold" htmlFor="video-description">
+          Video Description
+        </label>
+        <textarea
+          id="video-description"
+          value={videoDescription}
+          onChange={(e) => setVideoDescription(e.target.value)}
+          className={inputStyles}
+          rows={4}
+          required
+        />
+
         <label className="block mb-2 font-semibold" htmlFor="file-upload">
           Choose a video file
         </label>
@@ -75,7 +122,7 @@ const Upload: React.FC = () => {
           id="file-upload"
           type="file"
           accept="video/*" // Restrict to video file types
-          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyles}
           onChange={handleFileChange}
           required
         />
@@ -91,7 +138,7 @@ const Upload: React.FC = () => {
       <div className="mt-8">
         <h2 className="text-xl font-semibold">🌟 Upload Guidelines</h2>
         <ul className="list-disc list-inside mt-2">
-          <li>📁 Supported formats: .mp4, .avi, .mov, .mkv</li> {/* Updated to reflect video formats */}
+          <li>📁 Supported formats: .mp4, .avi, .mov, .mkv</li>
           <li>🔒 Ensure your file does not exceed 10MB.</li>
           <li>📝 Please provide accurate file information.</li>
         </ul>
@@ -99,7 +146,11 @@ const Upload: React.FC = () => {
 
       <div className="flex justify-center mt-8">
         <img
-          src={isDarkMode ? "/flowhooks-logo-white.png" : "/flowhooks-logo-dark.png"} // Change the logo based on dark mode
+          src={
+            isDarkMode
+              ? "/flowhooks-logo-white.png"
+              : "/flowhooks-logo-dark.png"
+          } // Change the logo based on dark mode
           alt="FlowHooks Logo"
           className="max-w-xs h-auto"
         />
