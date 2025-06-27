@@ -20,6 +20,10 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required: true // You can set this to false if the thumbnail is optional
     },
+    videoUrl: { // New field for video URL
+        type: String,
+        required: true // You can set this to false if the video URL is optional
+    },
     createdAt: {
         type: Date,
         default: Date.now // Automatically sets the date when the video is created

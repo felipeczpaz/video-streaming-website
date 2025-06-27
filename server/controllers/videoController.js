@@ -1,5 +1,60 @@
+const fs = require("fs");
+const path = require("path");
 const mongoose = require("mongoose");
 const Video = require("../models/Video"); // Assuming you have a Video model defined in models/Video.js
+
+// Stream video
+const streamVideo = async (req, res) => {
+  const { videoId } = req.params;
+
+  // Validate videoId
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    return res.status(400).json({ error: "Invalid video ID format" });
+  }
+
+  try {
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ error: "video_not_found" });
+    }
+
+    const videoPath = path.join(__dirname, "../", video.videoUrl);
+    const stat = fs.statSync(videoPath);
+    const fileSize = stat.size;
+    const range = req.headers.range;
+
+    if (range) {
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+      if (start >= fileSize || end >= fileSize) {
+        return res.status(416).send("Requested range not satisfiable");
+      }
+
+      res.writeHead(206, {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": end - start + 1,
+        "Content-Type": "video/mp4",
+      });
+
+      const stream = fs.createReadStream(videoPath, { start, end });
+      stream.pipe(res);
+    } else {
+      res.writeHead(200, {
+        "Content-Length": fileSize,
+        "Content-Type": "video/mp4",
+      });
+
+      const stream = fs.createReadStream(videoPath);
+      stream.pipe(res);
+    }
+  } catch (error) {
+    console.error("Error streaming video:", error);
+    res.status(500).json({ error: "error_streaming_video" });
+  }
+};
 
 // Create a new video
 const createVideo = async (req, res) => {
@@ -141,6 +196,7 @@ const getVideoFeed = async (req, res) => {
 
 // Export the controller functions
 module.exports = {
+  streamVideo,
   createVideo,
   getVideoDetails,
   updateVideo,

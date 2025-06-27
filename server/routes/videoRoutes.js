@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage, limits: { fileSize: 120 * 1024 * 1024 }});
+const upload = multer({ storage, limits: { fileSize: 1 * 1024 * 1024 * 1024 }});
 
 // Create a new video route
 router.post('/create', authenticate, videoController.createVideo);
@@ -45,6 +45,8 @@ router.post('/upload', authenticate, upload.single('videoFile'), videoController
 
 // Get video details route
 router.post('/:videoId', videoController.getVideoDetails);
+
+router.post("/:videoId/stream", videoController.streamVideo);
 
 // Update a video route
 router.put('/:videoId', authenticate, videoController.updateVideo);

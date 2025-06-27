@@ -37,8 +37,8 @@ connectDB();
 // Use CORS middleware
 app.use(cors());
 
-app.use(bodyParser.json({ limit: '120mb' })); // For JSON payloads
-app.use(bodyParser.urlencoded({ limit: '120mb', extended: true })); // For URL-encoded payloads
+app.use(bodyParser.json({ limit: '1gb' })); // For JSON payloads
+app.use(bodyParser.urlencoded({ limit: '1gb', extended: true })); // For URL-encoded payloads
 
 // Middleware to parse JSON bodies
 //app.use(express.json());
