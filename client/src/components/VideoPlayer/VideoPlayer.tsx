@@ -17,7 +17,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, description 
             </div>
             <div className="flex-1">
                 <h1 className="mt-4 text-2xl font-bold mb-2">{title}</h1>
-                <p className="text-base leading-relaxed">{description}</p>
+                <p className="text-base leading-relaxed text-gray-600">{description}</p>
             </div>
         </div>
     );
