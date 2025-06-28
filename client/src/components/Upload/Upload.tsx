@@ -1,28 +1,24 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useDarkMode } from "../../context/DarkModeContext"; // Adjust the import path as necessary
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
-interface UploadComponentProps {
-  onUpload: (file: File) => void; // Function to handle file upload
-}
-
-const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
+const UploadComponent: React.FC = () => {
+  const { isDarkMode } = useDarkMode(); // Use the dark mode context
   const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
+  const [videoTitle, setVideoTitle] = useState<string>(""); // State for video title
+  const [videoDescription, setVideoDescription] = useState<string>(""); // State for video description
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [uploadProgress, setUploadProgress] = useState<number>(0); // State for upload progress
+  const [isUploading, setIsUploading] = useState<boolean>(false); // State for upload indicator
+  const navigate = useNavigate(); // Initialize navigate for redirection
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      const validVideoTypes = ["video/mp4", "video/x-m4v", "video/ogg", "video/webm"];
-      if (!validVideoTypes.includes(selectedFile.type)) {
-        setError("Please select a valid video file (MP4, M4V, OGG, WEBM).");
-        setFile(null);
-        return;
-      }
       setFile(selectedFile);
-      setError("");
+      setError(""); // Clear any previous error
     }
   };
 
@@ -30,94 +26,112 @@ const UploadComponent: React.FC<UploadComponentProps> = ({ onUpload }) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setUploadProgress(0); // Reset progress
+    setIsUploading(true); // Start the upload process
 
-    if (!file || !title || !description || !thumbnailUrl) {
-      setError("Please fill in all fields and select a file to upload.");
+    if (!file) {
+      setError("Please select a file to upload.");
+      setIsUploading(false); // Stop the upload process
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("videoFile", file); // Use the correct field name for the video file
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("thumbnailUrl", thumbnailUrl); // Assuming thumbnailUrl is a string
+    const formData = new FormData();
+    formData.append("title", videoTitle);
+    formData.append("description", videoDescription);
+    formData.append("videoFile", file); // Ensure this matches the field name in multer
 
-      const response = await fetch("http://localhost:3000/api/videos/upload", { // Update the URL to match your backend route
-        method: "POST",
-        body: formData,
+    try {
+      const response = await axios.post("http://localhost:3000/api/videos/upload", formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentComplete = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          setUploadProgress(percentComplete); // Update progress state
+        },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setSuccessMessage("File uploaded successfully!");
-        onUpload(data.videoId); // Call the onUpload prop with the uploaded video ID
-      } else {
-        setError("Failed to upload file. Please try again.");
-      }
+      setSuccessMessage("File uploaded successfully!");
+      setVideoTitle(""); // Clear title after successful upload
+      setVideoDescription(""); // Clear description after successful upload
+      setFile(null); // Clear file after successful upload
+      navigate(`/video/${response.data.videoId}`); // Redirect to the uploaded video page
     } catch (error) {
-      setError("An error occurred during the upload. Please try again later.");
+      setError("Failed to upload file. Please try again.");
+    } finally {
+      setIsUploading(false); // Stop the upload process
     }
   };
 
+  // Common styles for inputs
+  const inputStyles = `w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 ${
+    isDarkMode
+      ? "bg-gray-600 border-gray-400 text-white focus:ring-blue-500"
+      : "bg-white text-black border-gray-300 focus:ring-blue-500"
+  }`;
+
   return (
-    <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Upload Video</h2>
-      {error && <p className="mb-4 text-red-600">{error}</p>}
-      {successMessage && <p className="mb-4 text-green-600">{successMessage}</p>}
-      <form onSubmit={handleSubmit} noValidate>
+    <div>
+      {error && <p className="mt-4 text-red-600">{error}</p>}
+      {successMessage && (
+        <p className="mt-4 text-green-600">{successMessage}</p>
+      )}
+      {isUploading && (
+        <div className="mt-4">
+          <div className="bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-blue-600 h-2.5 rounded-full"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
+          <p className="mt-1 text-sm text-blue-600">{uploadProgress}%</p>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="mt-6" noValidate>
+        <label className="block mb-2 font-semibold" htmlFor="video-title">
+          Video Title
+        </label>
+        <input
+          id="video-title"
+          type="text"
+          value={videoTitle}
+          onChange={(e) => setVideoTitle(e.target.value)}
+          className={inputStyles}
+          required
+        />
+
+        <label className="block mb-2 font-semibold" htmlFor="video-description">
+          Video Description
+        </label>
+        <textarea
+          id="video-description"
+          value={videoDescription}
+          onChange={(e) => setVideoDescription(e.target.value)}
+          className={inputStyles}
+          rows={4}
+          required
+        />
+
         <label className="block mb-2 font-semibold" htmlFor="file-upload">
           Choose a video file
         </label>
         <input
           id="file-upload"
           type="file"
-          accept="video/mp4,video/x-m4v,video/ogg,video/webm"
-          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          accept="video/*" // Restrict to video file types
+          className={inputStyles}
           onChange={handleFileChange}
-          required
-        />
-
-        <label className="block mb-2 font-semibold" htmlFor="title">
-          Title
-        </label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-
-        <label className="block mb-2 font-semibold" htmlFor="description">
-          Description
-        </label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-
-        <label className="block mb-2 font-semibold" htmlFor="thumbnailUrl">
-          Thumbnail URL
-        </label>
-        <input
-          id="thumbnailUrl"
-          type="text"
-          value={thumbnailUrl}
-          onChange={(e) => setThumbnailUrl(e.target.value)}
-          className="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
 
         <button
           type="submit"
           className="w-full bg-blue-500 text-white font-semibold py-2 rounded hover:bg-blue-600 transition-colors"
+          disabled={isUploading} // Disable button while uploading
         >
-          Upload
+          {isUploading ? "Uploading..." : "Upload"} {/* Change button text based on upload state */}
         </button>
       </form>
     </div>
