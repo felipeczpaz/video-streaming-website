@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+const { generateThumbnails } = require('../services/thumbnailService');
 const Video = require("../models/Video"); // Assuming you have a Video model defined in models/Video.js
 
 // Stream video
@@ -62,7 +63,7 @@ const createVideo = async (req, res) => {
     return res.status(400).json({ error: "request_body_missing" });
   }
 
-  const { title, description } = req.body; // Include thumbnailUrl
+  const { title, description } = req.body;
 
   // Check if the user is authenticated
   if (!req.userId) {
@@ -72,28 +73,31 @@ const createVideo = async (req, res) => {
   // Use the authenticated user's ID as uploaderId
   const uploaderId = req.userId;
 
-  const thumbnailUrl =
-    "https://i.ytimg.com/an_webp/PROSPw8WwDc/mqdefault_6s.webp?du=3000&sqp=CPKY7cIG&rs=AOn4CLDzLoeN8Es-HOm37M7CNhdpU_9GZg";
-
   // Check if all required fields are provided
-  if (!title || !description || !thumbnailUrl || !req.file) {
-    // Check for thumbnailUrl
+  if (!title || !description || !req.file) {
     return res.status(400).json({
       error: "missing_required_fields",
-      fields: { title, description, thumbnailUrl },
+      fields: { title, description },
     });
   }
 
-  // Create a new video
-  const newVideo = new Video({
-    title,
-    description,
-    thumbnailUrl, // Add thumbnailUrl to the new video
-    videoUrl: req.file.path,
-    uploaderId,
-  });
+  // Define paths for the video and thumbnails
+  const videoPath = req.file.path;
+  const thumbnailFolder = 'thumbnails';
 
   try {
+    // Generate thumbnails
+    const thumbnailPaths = await generateThumbnails(videoPath, 1, thumbnailFolder);
+
+    // Create a new video with the generated thumbnail URLs
+    const newVideo = new Video({
+      title,
+      description,
+      thumbnailUrl: thumbnailPaths, // Store an array of thumbnail paths
+      videoUrl: videoPath,
+      uploaderId,
+    });
+
     await newVideo.save();
     res.status(201).json({
       success: true,
@@ -101,8 +105,8 @@ const createVideo = async (req, res) => {
       videoId: newVideo._id,
     });
   } catch (error) {
-    console.error("Error creating video:", error); // Log the error details
-    res.status(400).json({ error: "error_creating_video" });
+    console.error("Error creating video:", error);
+    res.status(500).json({ error: "error_creating_video" });
   }
 };
 

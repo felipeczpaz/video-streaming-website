@@ -16,8 +16,8 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    thumbnailUrl: { // New field for thumbnail URL
-        type: String,
+    thumbnailUrl: { // Changed to an array of strings for thumbnail URLs
+        type: [String], // Array of strings
         required: true // You can set this to false if the thumbnail is optional
     },
     videoUrl: { // New field for video URL
