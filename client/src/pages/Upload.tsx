@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDarkMode } from "../context/DarkModeContext"; // Adjust the import path as necessary
 import { useUser } from "../context/UserContext"; // Adjust the import path as necessary
 import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
@@ -7,14 +7,22 @@ import UploadComponent from "../components/Upload/Upload.tsx"; // Import the new
 const UploadPage: React.FC = () => {
   const { user } = useUser(); // Access user context
   const navigate = useNavigate(); // Initialize navigate for redirection
+  const [token, setToken] = useState<string | null>(null); // State to store the token
 
   // Check for token in local storage on component mount
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken); // Store the token if found
+    } else {
       navigate("/login"); // Redirect to login if token is not found
     }
   }, [navigate]);
+
+  // Return nothing if there is no token
+  if (!token) {
+    return null; // Render nothing if no token is found
+  }
 
   return (
     <div className="max-w-3xl mx-auto mt-20 p-8 font-sans">

@@ -128,6 +128,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
           Register
         </button>
       </form>
+
+
+      <div className="mt-4 text-center">
+        <p className="text-gray-600">
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            Log in here
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
