@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate, Link } from "react-router-dom"; // Import useNavigate and Link
 
 interface RegisterFormProps {
   onSubmit: (email: string, password: string) => void;
@@ -53,7 +53,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       if (response.ok) {
         setSuccessMessage(data.message);
         // Optionally, you can call onSubmit here if needed
-        //onSubmit(email, password);
+        // onSubmit(email, password);
 
         localStorage.setItem('token', data.token);
         window.dispatchEvent(new Event('authChange'));
@@ -129,13 +129,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
         </button>
       </form>
 
-
       <div className="mt-4 text-center">
         <p className="text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-500 hover:underline">
+          <Link to="/login" className="text-blue-500 hover:underline">
             Log in here
-          </a>
+          </Link>
         </p>
       </div>
     </div>
@@ -143,3 +142,4 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 };
 
 export default RegisterForm;
+         

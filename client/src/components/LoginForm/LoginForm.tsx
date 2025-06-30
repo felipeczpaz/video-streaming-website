@@ -1,27 +1,27 @@
 /*
-************************************************************
-*                                                          *
-*   Flowhooks Software - Open Source License               *
-*                                                          *
-*  This software is licensed under the GNU Affero General   *
-*  Public License v3. You may use, modify, and distribute   *
-*  this code under the terms of the AGPLv3.                *
-*                                                          *
-*  This program is distributed in the hope that it will be  *
-*  useful, but WITHOUT ANY WARRANTY; without even the       *
-*  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
-*  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
-*                                                          *
-*  Author: Felipe Cezar Paz (git@felipecezar.com)          *
-*  File:                                                   *
-*  Description:                                            *
-*                                                          *
-************************************************************
-*/
+ ************************************************************
+ *                                                          *
+ *   Flowhooks Software - Open Source License               *
+ *                                                          *
+ *  This software is licensed under the GNU Affero General   *
+ *  Public License v3. You may use, modify, and distribute   *
+ *  this code under the terms of the AGPLv3.                *
+ *                                                          *
+ *  This program is distributed in the hope that it will be  *
+ *  useful, but WITHOUT ANY WARRANTY; without even the       *
+ *  implied warranty of MERCHANTABILITY or FITNESS FOR A     *
+ *  PARTICULAR PURPOSE. See the GNU AGPLv3 for more details. *
+ *                                                          *
+ *  Author: Felipe Cezar Paz (git@felipecezar.com)          *
+ *  File:                                                   *
+ *  Description:                                            *
+ *                                                          *
+ ************************************************************
+ */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
-import { useUser } from '../../context/UserContext';
+import { useNavigate, Link } from "react-router-dom"; // Import useNavigate and Link
+import { useUser } from "../../context/UserContext";
 
 interface LoginFormProps {
   onSubmit: (userId: string, username: string) => void; // Adjusted to match the expected parameters
@@ -57,26 +57,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Login successful:', data);
-        setSuccessMessage('Login successful!');
+        console.log("Login successful:", data);
+        setSuccessMessage("Login successful!");
 
-        localStorage.setItem('token', data.token);
-        window.dispatchEvent(new Event('authChange'));
+        localStorage.setItem("token", data.token);
+        window.dispatchEvent(new Event("authChange"));
 
         // Call the onSubmit prop with userId and username
-        //onSubmit(data.userId, data.username);
+        // onSubmit(data.userId, data.username);
 
         // Redirect to the root path upon success
         navigate("/"); // Use navigate to redirect
       } else {
         // Associative array for error messages
         const errorMessages: { [key: string]: string } = {
-          'invalid_credentials': "Invalid username/email or password.",
-          'error_logging_in': "There was an error logging in.",
+          invalid_credentials: "Invalid username/email or password.",
+          error_logging_in: "There was an error logging in.",
         };
 
         // Set error message based on the error code
-        setError(errorMessages[data.error] || "Login failed. Please try again.");
+        setError(
+          errorMessages[data.error] || "Login failed. Please try again.",
+        );
       }
     } catch (error) {
       setError("An error occurred. Please try again later.");
@@ -87,7 +89,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded-xl shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
       {error && <p className="mb-4 text-red-600">{error}</p>}
-      {successMessage && <p className="mb-4 text-green-600">{successMessage}</p>}
+      {successMessage && (
+        <p className="mb-4 text-green-600">{successMessage}</p>
+      )}
       <form onSubmit={handleSubmit} noValidate>
         <label className="block mb-2 font-semibold" htmlFor="login">
           Username or Email
@@ -126,9 +130,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       <div className="mt-4 text-center">
         <p className="text-gray-600">
           Don't have an account?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
+          <Link to="/register" className="text-blue-500 hover:underline">
             Register here
-          </a>
+          </Link>
         </p>
       </div>
     </div>

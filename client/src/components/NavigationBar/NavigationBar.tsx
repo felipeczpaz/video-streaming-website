@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { useUser } from "../../context/UserContext"; // Adjust the import path as necessary
 import { useDarkMode } from "../../context/DarkModeContext"; // Import the dark mode context
 
@@ -15,35 +16,35 @@ const NavigationBar: React.FC = () => {
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <a href="/" className="text-xl font-bold text-white">
+            <Link to="/" className="text-xl font-bold text-white">
               Video Streaming Site
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center space-x-6">
-            <a href="/" className="text-white hover:text-gray-300">
+            <Link to="/" className="text-white hover:text-gray-300">
               Home
-            </a>
+            </Link>
             {/* Upload Button */}
-            <a href="/upload" className="text-white hover:text-gray-300">
+            <Link to="/upload" className="text-white hover:text-gray-300">
               Upload
-            </a>
-            <a href="/about" className="text-white hover:text-gray-300">
+            </Link>
+            <Link to="/about" className="text-white hover:text-gray-300">
               About
-            </a>
+            </Link>
             {user ? (
-              <a href="/logout" className="text-white hover:text-gray-300">
+              <Link to="/logout" className="text-white hover:text-gray-300">
                 Logout
-              </a>
+              </Link>
             ) : (
               <>
-                <a href="/login" className="text-white hover:text-gray-300">
+                <Link to="/login" className="text-white hover:text-gray-300">
                   Login
-                </a>
-                <a href="/register" className="text-white hover:text-gray-300">
+                </Link>
+                <Link to="/register" className="text-white hover:text-gray-300">
                   Register
-                </a>
+                </Link>
               </>
             )}
 
@@ -111,39 +112,39 @@ const NavigationBar: React.FC = () => {
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
             >
               Home
-            </a>
-            <a
-              href="/about"
+            </Link>
+            <Link
+              to="/about"
               className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
             >
               About
-            </a>
+            </Link>
             {user ? (
-              <a
-                href="/logout"
+              <Link
+                to="/logout"
                 className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
               >
                 Logout
-              </a>
+              </Link>
             ) : (
               <>
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
                 >
                   Login
-                </a>
-                <a
-                  href="/register"
+                </Link>
+                <Link
+                  to="/register"
                   className="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-gray-600 hover:bg-gray-200"
                 >
                   Register
-                </a>
+                </Link>
               </>
             )}
 
