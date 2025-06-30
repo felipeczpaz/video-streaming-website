@@ -20,8 +20,6 @@
 */
 
 import React from "react"; // Import React
-import { useState } from "react";
-import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home"; // Import the Home component
 import About from "./pages/About"; // Import the About component
@@ -32,6 +30,7 @@ import Footer from "./components/Footer/Footer"; // Import the Footer component
 import LoginForm from "./components/LoginForm/LoginForm"; // Import the LoginForm component
 import RegisterForm from "./components/RegisterForm/RegisterForm"; // Import the RegisterForm component
 import Logout from './components/Logout/Logout'; // Import the Logout component
+import "./App.css";
 
 const App: React.FC = () => {
   return (

@@ -1,87 +1,109 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import VideoPlayer from '../components/VideoPlayer/VideoPlayer';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
 
 const VideoPage: React.FC = () => {
-    const { videoId } = useParams<{ videoId: string }>();
-    const [video, setVideo] = useState<any>(null); // State to hold video metadata
-    const [videoUrl, setVideoUrl] = useState<string | null>(null); // State to hold video URL
-    const [loading, setLoading] = useState<boolean>(true); // State to manage loading state
-    const [error, setError] = useState<string | null>(null); // State to manage error messages
+  const { videoId } = useParams<{ videoId: string }>();
+  const [video, setVideo] = useState<any>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null); // Reference to the video element
 
-    useEffect(() => {
-        const fetchVideoData = async () => {
-            setLoading(true); // Start loading
-            setError(null); // Reset error state
+  useEffect(() => {
+    const fetchVideoData = async () => {
+      setLoading(true);
+      setError(null);
 
-            try {
-                // Fetch video metadata
-                const response = await fetch(`http://localhost:3000/api/videos/${videoId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
-                        'Content-Type': 'application/json',
-                    },
-                });
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/videos/${videoId}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch video metadata');
-                }
+        if (!response.ok) {
+          throw new Error("Failed to fetch video metadata");
+        }
 
-                const data = await response.json();
-                setVideo(data.video); // Set the video metadata
+        const data = await response.json();
+        setVideo(data.video);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                // Now fetch the video stream
-                /*const streamResponse = await fetch(`http://localhost:3000/api/videos/${videoId}/stream`, {
-                    method: 'POST', // Use POST for streaming video
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem("token")}`, // Replace with your actual token
-                    },
-                });
+    fetchVideoData();
+    handlePlayVideo(0, 32 * 1024 * 1024 - 1); // Fetch the first 32 MB
+  }, [videoId]);
 
-                if (!streamResponse.ok) {
-                    throw new Error('Failed to fetch video stream');
-                }
+  const handlePlayVideo = async (start: number, end: number) => {
+    try {
+      const streamResponse = await fetch(
+        `http://localhost:3000/api/videos/${videoId}/stream`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Range: `bytes=${start}-${end}`,
+          },
+        },
+      );
 
-                const videoBlob = await streamResponse.blob(); // Get the response as a Blob
-                const url = URL.createObjectURL(videoBlob); // Create a URL for the Blob
-                setVideoUrl(url); // Set the video URL for the player*/
+      if (!streamResponse.ok) {
+        throw new Error("Failed to fetch video stream");
+      }
 
-            } catch (err) {
-                setError(err.message); // Set error message if fetch fails
-            } finally {
-                setLoading(false); // Set loading to false after fetch is complete
-            }
-        };
-
-        fetchVideoData();
-    }, [videoId]); // Dependency array includes videoId to refetch if it changes
-
-    if (loading) {
-        return <div className="mt-8 pt-8">Loading...</div>; // Show loading state
+      const videoBlob = await streamResponse.blob();
+      const url = URL.createObjectURL(videoBlob);
+      setVideoUrl(url);
+    } catch (err) {
+      setError(err.message);
     }
+  };
 
-    if (error) {
-        return <div className="mt-8 pt-8">Error: {error}</div>; // Show error message if fetch fails
+  const handleVideoTimeUpdate = async () => {
+    if (videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      const duration = videoRef.current.duration;
+
+      console.log(`Current time: ${currentTime} seconds`);
+      console.log(`Duration: ${duration} seconds`);
     }
+  };
 
-    if (!video) {
-        return <div className="mt-8 pt-8">No video found</div>; // Handle case where no video data is returned
-    }
+  if (loading) {
+    return <div className="mt-8 pt-8">Loading...</div>;
+  }
 
-    return (
-        <div>
-            {video ? (
-                <VideoPlayer 
-                    videoUrl={videoUrl} 
-                    title={video.title} 
-                    description={video.description} 
-                />
-            ) : (
-                <div>Loading video...</div> // Show loading state for video
-            )}
-        </div>
-    );
+  if (error) {
+    return <div className="mt-8 pt-8">Error: {error}</div>;
+  }
+
+  if (!video) {
+    return <div className="mt-8 pt-8">No video found</div>;
+  }
+
+  return (
+    <div>
+      {video && (
+        <VideoPlayer
+          videoUrl={videoUrl}
+          title={video.title}
+          description={video.description}
+          onTimeUpdate={handleVideoTimeUpdate} // Pass the time update handler
+          ref={videoRef} // Attach the ref to the video player
+        />
+      )}
+    </div>
+  );
 };
 
 export default VideoPage;
