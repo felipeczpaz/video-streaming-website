@@ -44,12 +44,12 @@ const Home: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {videos.map((video) => (
           <Link
-            key={video.id}
+            key={video._id} // Use _id as the key
             to={`/video/${video._id}`} // Link to the video page
             className="border rounded-lg overflow-hidden shadow-lg transition-transform transform hover:scale-105"
           >
             <img
-              src={video.thumbnailUrl}
+              src={`http://localhost:3000/api/videos/${video._id}/thumbnail`} // Construct the thumbnail URL
               alt={video.title}
               className="w-full h-auto"
             />
