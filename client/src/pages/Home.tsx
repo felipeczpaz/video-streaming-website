@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Spinner from '../components/Spinner/Spinner'; // Import the Spinner component
 
 const Home: React.FC = () => {
   const [videos, setVideos] = useState<any[]>([]);
@@ -26,7 +27,11 @@ const Home: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center p-6 mt-20">Loading videos...</div>;
+    return (
+      <div className="text-center p-6 mt-20">
+        <Spinner /> {/* Use the Spinner component */}
+      </div>
+    );
   }
 
   if (error) {

@@ -1,6 +1,8 @@
 /* General styles for dark mode */
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .dark body {
@@ -28,4 +30,17 @@ body {
 
 .dark input::placeholder {
   color: #b0b0b0; /* Softer placeholder color in dark mode */
+}
+
+@keyframes spin-fast {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-fast {
+  animation: spin-fast 0.7s cubic-bezier(0.5, 0, 0.5, 1) infinite; /* Non-linear timing function */
 }

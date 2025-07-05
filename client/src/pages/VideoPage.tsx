@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
+import Spinner from "../components/Spinner/Spinner"; // Import the Spinner component
 
 const VideoPage: React.FC = () => {
   const { videoId } = useParams<{ videoId: string }>();
@@ -80,7 +81,11 @@ const VideoPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="mt-8 pt-8">Loading...</div>;
+    return (
+      <div className="mt-8 pt-8">
+        <Spinner /> {/* Use the Spinner component here */}
+      </div>
+    );
   }
 
   if (error) {
