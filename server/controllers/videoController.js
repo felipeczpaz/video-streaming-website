@@ -88,6 +88,7 @@ const createVideo = async (req, res) => {
   try {
     // Generate thumbnails
     const thumbnailPaths = await generateThumbnails(videoPath, 1, thumbnailFolder);
+console.log(thumbnailPaths);
 
     // Create a new video with the generated thumbnail URLs
     const newVideo = new Video({
@@ -198,6 +199,45 @@ const getVideoFeed = async (req, res) => {
   }
 };
 
+// Get video thumbnail
+const getVideoThumbnail = async (req, res) => {
+  const { videoId } = req.params;
+
+  // Check if the videoId is a valid ObjectId
+  if (!mongoose.Types.ObjectId.isValid(videoId)) {
+    return res.status(400).json({ error: "Invalid video ID format" });
+  }
+
+  try {
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ error: "video_not_found" });
+    }
+
+    // Assuming thumbnailUrl is stored as an array, get the first thumbnail
+    const thumbnailUrl = video.thumbnailUrl[0]; // Adjust this if you want a different thumbnail
+
+    // Define the path to the thumbnail
+    const thumbnailPath = path.join(__dirname, "../", thumbnailUrl);
+
+    // Check if the thumbnail exists
+    if (!fs.existsSync(thumbnailPath)) {
+      return res.status(404).json({ error: "thumbnail_not_found" });
+    }
+
+    // Serve the thumbnail image
+    res.sendFile(thumbnailPath, { headers: { 'Content-Type': 'image/png' } }, (err) => {
+      if (err) {
+        console.error("Error sending thumbnail:", err);
+        res.status(err.status).end();
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving video thumbnail:", error);
+    res.status(500).json({ error: "error_retrieving_thumbnail" });
+  }
+};
+
 // Export the controller functions
 module.exports = {
   streamVideo,
@@ -206,4 +246,5 @@ module.exports = {
   updateVideo,
   deleteVideo,
   getVideoFeed,
+  getVideoThumbnail, // Add the new function to the exports
 };

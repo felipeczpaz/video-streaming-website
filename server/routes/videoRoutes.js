@@ -57,4 +57,6 @@ router.delete('/:videoId', authenticate, videoController.deleteVideo);
 // Fetch video feed route
 router.get('/feed', videoController.getVideoFeed);
 
+router.get('/:videoId/thumbnail', videoController.getVideoThumbnail);
+
 module.exports = router;
